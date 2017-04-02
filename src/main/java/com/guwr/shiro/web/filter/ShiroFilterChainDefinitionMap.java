@@ -17,7 +17,6 @@ public class ShiroFilterChainDefinitionMap {
         System.out.println("ShiroFilterChainDefinitionMap.getFilterChainDefinitionMap");
         Map<String, String> finitionMap = new LinkedHashMap<>();
         finitionMap.put("/login", "anon");
-        finitionMap.put("/index", "anon");
         finitionMap.put("/**", "authc");
         return finitionMap;
     }

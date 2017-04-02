@@ -4,18 +4,28 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-        <property name="cacheManager" ref="cacheManager"/>
+        <!--<property name="cacheManager" ref="cacheManager"/>-->
         <property name="authenticator" ref="authenticator"/>
+        <property name="realm" ref="jdbcRealm"/>
     </bean>
-    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
-        <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
-    </bean>
+    <!--<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">-->
+        <!--<property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>-->
+    <!--</bean>-->
 
 
     <bean id="authenticator"
           class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
         <property name="authenticationStrategy">
             <bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"/>
+        </property>
+    </bean>
+
+    <bean id="jdbcRealm" class="com.guwr.shiro.web.realm.JdbcRealm">
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="MD5"/>
+                <property name="hashIterations" value="2"/>
+            </bean>
         </property>
     </bean>
     <!--
@@ -37,7 +47,7 @@
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login.jsp"/>
-        <property name="successUrl" value="/list.jsp"/>
+        <property name="successUrl" value="/index.jsp"/>
         <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
         <!--
         	配置哪些页面需要受保护.
@@ -49,12 +59,12 @@
         -->
         <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"/>
         <!--<property name="filterChainDefinitions">-->
-            <!--<value>-->
-                <!--/login.jsp = anon-->
-                <!--/login = anon-->
-                <!--/index = anon-->
-                <!--/** = authc-->
-            <!--</value>-->
+        <!--<value>-->
+        <!--/login.jsp = anon-->
+        <!--/login = anon-->
+        <!--/index = anon-->
+        <!--/** = authc-->
+        <!--</value>-->
         <!--</property>-->
     </bean>
     <bean id="filterChainDefinitionMap" factory-bean="shiroFilterChainDefinitionMap"
